@@ -34,3 +34,7 @@
     margin-right: auto;
     margin-bottom: 0px;
 }
+
+.mybox>li>h2.done {
+    text-decoration: line-through
+}

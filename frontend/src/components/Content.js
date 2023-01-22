@@ -22,10 +22,13 @@ function List() {
                 (result) => {
                     console.log(result)
                     setBuckets(result.map((bucket) => (
-                        <li key={bucket._id.$oid}>
-                            <h2>✅ {bucket.bucket}</h2>
-                            <button className="btn btn-outline-danger me-3"><i className="bi bi-trash3"></i></button>
-                            <button className="btn btn-outline-primary"><i className="bi bi-check2"></i></button>
+                        <li key={bucket._id.$oid} className='gap-3'>
+                            <h2 className={bucket.done && 'done'}>✅ {bucket.bucket}</h2>
+                            <button className="btn btn-outline-danger"><i className="bi bi-trash3"></i></button>
+                            {
+                                !bucket.done &&
+                                <button className="btn btn-outline-primary"><i className="bi bi-check2"></i></button>
+                            }
                         </li>
                     )))
                 },
