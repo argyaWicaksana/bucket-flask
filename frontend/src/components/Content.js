@@ -2,56 +2,90 @@ import React from 'react'
 import '../styles/Content.css'
 
 function Form(props) {
+    const [input, setInput] = React.useState('')
+
+    const handleInputChange = (e) => setInput(e.target.value)
+    const handleClickBtn = () => {
+        resetInput()
+        props.onInputChange(input)
+    }
+    const resetInput = () => setInput('')
+
     return (
         <div className='mybox'>
             <div className='mybucket'>
-                <input className="form-control" type="text" placeholder={props.placeholder} />
-                <button className="btn btn-outline-primary">{props.button}</button>
+                <input
+                    value={input}
+                    className="form-control"
+                    type="text"
+                    onChange={handleInputChange}
+                    placeholder={props.placeholder} />
+                <button className="btn btn-outline-primary"
+                    onClick={handleClickBtn}
+                >{props.button}</button>
             </div>
         </div>
     )
 }
 
-function List() {
-    const [buckets, setBuckets] = React.useState([])
-    // Using Ajax
-    React.useEffect(() => {
-        fetch("/bucket")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result)
-                    setBuckets(result.map((bucket) => (
-                        <li key={bucket._id.$oid} className='gap-3'>
-                            <h2 className={bucket.done && 'done'}>✅ {bucket.bucket}</h2>
-                            <button className="btn btn-outline-danger"><i className="bi bi-trash3"></i></button>
-                            {
-                                !bucket.done &&
-                                <button className="btn btn-outline-primary"><i className="bi bi-check2"></i></button>
-                            }
-                        </li>
-                    )))
-                },
-                (error) => {
-                    console.log('Error telah terjadi!')
-                    console.log(error.message)
-                }
-            )
-    }, [])
-
+function List(props) {
     return (
         <div className='mybox'>
-            {buckets}
-            {/* <li>
-                <h2>✅ Get a Scholarship</h2>
-                <button className="btn btn-outline-danger me-3"><i className="bi bi-trash3"></i></button>
-                <button className="btn btn-outline-primary"><i className="bi bi-check2"></i></button>
-            </li> */}
+            {props.data}
         </div>
     )
 }
 
 function Content(props) {
+    const [buckets, setBuckets] = React.useState([])
+
+    // Using Ajax
+    function getBucket() {
+        fetch("/bucket")
+            .then(res => res.json())
+            .then((result) => {
+                setBuckets(result.map((bucket) => (
+                    <li key={bucket._id.$oid} className='gap-3'>
+                        <h2 className={bucket.done && 'done'}>✅ {bucket.bucket}</h2>
+                        <button className="btn btn-outline-danger"><i className="bi bi-trash3"></i></button>
+                        {
+                            !bucket.done &&
+                            <button className="btn btn-outline-primary"><i className="bi bi-check2"></i></button>
+                        }
+                    </li>
+                )))
+            },
+                (error) => {
+                    console.log('Error telah terjadi!')
+                    console.log(error.message)
+                }
+            )
+    }
+
+    function addBucket(data) {
+        const requestMetadata = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bucket: data })
+        }
+
+        fetch("/bucket", requestMetadata)
+            .then(res => res.json())
+            .then((result) => {
+                console.log(result)
+            })
+
+        getBucket()
+    }
+
+    function filterBucket(keyword) {
+
+    }
+
+    React.useEffect(getBucket, [])
+
     return (
         <div>
             {
@@ -59,13 +93,15 @@ function Content(props) {
                 <Form
                     placeholder='Enter your bucket list item here'
                     button='Save'
+                    onInputChange={addBucket}
                 />
             }
             <Form
                 placeholder='Search...'
                 button='Search'
+                onInputChange={filterBucket}
             />
-            <List />
+            <List data={buckets} />
         </div>
     )
 }

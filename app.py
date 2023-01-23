@@ -29,12 +29,9 @@ def home():
 
 @app.route("/bucket", methods=["POST"])
 def bucket_post():
-    bucket = request.form['bucket']
-    num = db.bucket.count_documents({})
-    num += 1
+    bucket = request.json['bucket']
 
     doc = {
-        'num': num,
         'bucket': bucket,
         'done': 0
     }
