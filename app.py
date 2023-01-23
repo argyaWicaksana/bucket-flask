@@ -42,9 +42,9 @@ def bucket_post():
 
 @app.route("/bucket/done", methods=["POST"])
 def bucket_done():
-    num = request.form['num']
+    id = request.json['id']
     db.bucket.update_one(
-        {'num': int(num)},
+        {'_id': ObjectId(id)},
         {'$set': {'done': 1}}
     )
     return jsonify({'msg': 'Update done!'})
@@ -52,7 +52,7 @@ def bucket_done():
 
 @app.route("/bucket/delete", methods=["POST"])
 def bucket_delete():
-    data_id = request.form['id']
+    data_id = request.json['id']
     db.bucket.delete_one( {'_id': ObjectId(data_id)})
     return jsonify({'msg': 'Deleted!'})
 
