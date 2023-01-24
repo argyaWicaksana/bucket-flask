@@ -29,34 +29,58 @@ function Form(props) {
 }
 
 function List(props) {
+    const buckets = props.buckets
+    const filterText = props.filterText
+    const bucketList = []
+
+    buckets.forEach(b => {
+        if (!b.bucket.includes(filterText)) return
+
+        bucketList.push(
+            <ListBucket key={b._id.$oid}
+                data={b}
+                onDeleteClick={props.deleteBucket}
+                onDoneClick={props.bucketDone}
+            />
+        )
+    })
+
     return (
         <div className='mybox'>
-            {props.data}
+            {bucketList}
         </div>
+    )
+}
+
+function ListBucket(props) {
+    const bucket = props.data
+    const handleDeleteBtn = () => props.onDeleteClick(bucket._id.$oid)
+    const handleDoneBtn = () => props.onDoneClick(bucket._id.$oid)
+    return (
+        <li className='gap-3'>
+            <h2 className={bucket.done && 'done'}>✅ {bucket.bucket}</h2>
+            <button onClick={handleDeleteBtn} className="btn btn-outline-danger">
+                <i className="bi bi-trash3"></i>
+            </button>
+            {!bucket.done &&
+                <button onClick={handleDoneBtn} className="btn btn-outline-primary">
+                    <i className="bi bi-check2"></i>
+                </button>
+            }
+        </li>
     )
 }
 
 function Content(props) {
     const [buckets, setBuckets] = React.useState([])
+    const [filterText, setFilterText] = React.useState('')
 
     // Using Ajax
     function getBucket() {
         fetch("/bucket")
             .then(res => res.json())
             .then((result) => {
-                setBuckets(result.map((bucket) => (
-                    <li key={bucket._id.$oid} className='gap-3'>
-                        <h2 className={bucket.done && 'done'}>✅ {bucket.bucket}</h2>
-                        <button onClick={() => deleteBucket(bucket._id.$oid)} className="btn btn-outline-danger">
-                            <i className="bi bi-trash3"></i>
-                        </button>
-                        { !bucket.done &&
-                            <button onClick={() => bucketDone(bucket._id.$oid)} className="btn btn-outline-primary">
-                                <i className="bi bi-check2"></i>
-                            </button>
-                        }
-                    </li>
-                )))
+                setBuckets(result)
             },
                 (error) => {
                     console.log('Error telah terjadi!')
@@ -78,9 +102,8 @@ function Content(props) {
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
+                return getBucket()
             })
-
-        getBucket()
     }
 
     function deleteBucket(id) {
@@ -96,9 +119,8 @@ function Content(props) {
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
+                return getBucket()
             })
-
-        getBucket()
     }
 
     function bucketDone(id) {
@@ -114,13 +136,14 @@ function Content(props) {
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
+                return getBucket()
             })
-
-        getBucket()
     }
 
     function filterBucket(keyword) {
-
+        setFilterText(keyword)
+        // if (keyword==='') setFiltered(buckets)
+        // else setFiltered(buckets.filter(({ bucket }) => bucket.includes(keyword)))
     }
 
     React.useEffect(getBucket, [])
@@ -140,7 +163,19 @@ function Content(props) {
                 button='Search'
                 onInputChange={filterBucket}
             />
-            <List data={buckets} />
+            <List
+                filterText={filterText}
+                buckets={buckets}
+                deleteBucket={deleteBucket}
+                bucketDone={bucketDone}
+            />
+            {/* {buckets.map((bucket) => (
+                    <ListBucket key={bucket._id.$oid}
+                        data={bucket}
+                        onDeleteClick={deleteBucket}
+                        onDoneClick={bucketDone}
+                    />
+                ))} */}
         </div>
     )
 }
