@@ -140,11 +140,7 @@ function Content(props) {
             })
     }
 
-    function filterBucket(keyword) {
-        setFilterText(keyword)
-        // if (keyword==='') setFiltered(buckets)
-        // else setFiltered(buckets.filter(({ bucket }) => bucket.includes(keyword)))
-    }
+    const filterBucket = (keyword) => setFilterText(keyword)
 
     React.useEffect(getBucket, [])
 
@@ -169,13 +165,6 @@ function Content(props) {
                 deleteBucket={deleteBucket}
                 bucketDone={bucketDone}
             />
-            {/* {buckets.map((bucket) => (
-                    <ListBucket key={bucket._id.$oid}
-                        data={bucket}
-                        onDeleteClick={deleteBucket}
-                        onDoneClick={bucketDone}
-                    />
-                ))} */}
         </div>
     )
 }
