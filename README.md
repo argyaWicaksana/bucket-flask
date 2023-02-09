@@ -9,3 +9,15 @@ MONGODB_URI="YOUR_MONGO_DB_URI"
 DB_NAME="YOUR_DB_NAME"
 
 ``` 
+3. Run API
+```
+python app.py
+```
+4. Install Package for frontend
+```
+npm install
+```
+5. Run frontend
+```
+npm run start
+```
