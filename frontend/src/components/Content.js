@@ -77,7 +77,7 @@ function Content(props) {
 
     // Using Ajax
     function getBucket() {
-        fetch("/bucket")
+        fetch("http://localhost:5000")
             .then(res => res.json())
             .then((result) => {
                 setBuckets(result)
@@ -98,46 +98,61 @@ function Content(props) {
             body: JSON.stringify({ bucket: data })
         }
 
-        fetch("/bucket", requestMetadata)
+        fetch("/", requestMetadata)
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
                 return getBucket()
-            })
+            },
+                (error) => {
+                    console.log('Error telah terjadi!')
+                    console.log(error.message)
+                }
+            )
     }
 
     function deleteBucket(id) {
         const requestMetadata = {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ id: id })
         }
 
-        fetch("/bucket/delete", requestMetadata)
+        fetch("/", requestMetadata)
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
                 return getBucket()
-            })
+            },
+                (error) => {
+                    console.log('Error telah terjadi!')
+                    console.log(error.message)
+                }
+            )
     }
 
     function bucketDone(id) {
         const requestMetadata = {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ id: id })
         }
 
-        fetch("/bucket/done", requestMetadata)
+        fetch("/", requestMetadata)
             .then(res => res.json())
             .then((result) => {
                 console.log(result)
                 return getBucket()
-            })
+            },
+                (error) => {
+                    console.log('Error telah terjadi!')
+                    console.log(error.message)
+                }
+            )
     }
 
     const filterBucket = (keyword) => setFilterText(keyword)

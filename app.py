@@ -22,12 +22,7 @@ def parse_json(data):
     data = json.loads(json_util.dumps(data))
     return data
 
-@app.route('/')
-def home():
-   return render_template('index.html')
-
-
-@app.route("/bucket", methods=["POST"])
+@app.route("/", methods=["POST"])
 def bucket_post():
     bucket = request.json['bucket']
 
@@ -40,7 +35,7 @@ def bucket_post():
     return jsonify({'msg': 'Data saved!'})
 
 
-@app.route("/bucket/done", methods=["POST"])
+@app.route("/", methods=["PUT"])
 def bucket_done():
     id = request.json['id']
     db.bucket.update_one(
@@ -50,13 +45,13 @@ def bucket_done():
     return jsonify({'msg': 'Update done!'})
 
 
-@app.route("/bucket/delete", methods=["POST"])
+@app.route("/", methods=["DELETE"])
 def bucket_delete():
     data_id = request.json['id']
     db.bucket.delete_one( {'_id': ObjectId(data_id)})
     return jsonify({'msg': 'Deleted!'})
 
-@app.route("/bucket", methods=["GET"])
+@app.route("/", methods=["GET"])
 def bucket_get():
     list_bucket = list(db.bucket.find())
     return parse_json(list_bucket)
